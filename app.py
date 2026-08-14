@@ -17,6 +17,232 @@ st.set_page_config(
 
 
 # =========================================================
+# 디자인 CSS
+# =========================================================
+
+st.markdown("""
+<style>
+
+/* ---------------------------------------------------------
+   전체 페이지
+--------------------------------------------------------- */
+
+.main {
+    background-color: #f6f8fb;
+}
+
+
+/* ---------------------------------------------------------
+   상단 제목
+--------------------------------------------------------- */
+
+.main-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #172033;
+    margin-bottom: 0.2rem;
+}
+
+.main-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 1.8rem;
+}
+
+
+/* ---------------------------------------------------------
+   카드
+--------------------------------------------------------- */
+
+.dashboard-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 18px;
+    border: 1px solid #e8ebf0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+
+/* ---------------------------------------------------------
+   출결 카드
+--------------------------------------------------------- */
+
+.attendance-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid #e8ebf0;
+    margin-bottom: 16px;
+}
+
+.attendance-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #172033;
+}
+
+.attendance-date {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+
+/* ---------------------------------------------------------
+   상태 배지
+--------------------------------------------------------- */
+
+.status-present {
+    display: inline-block;
+    background: #e8f7ee;
+    color: #16834b;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.status-late {
+    display: inline-block;
+    background: #fff5db;
+    color: #b77900;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.status-absent {
+    display: inline-block;
+    background: #fdecec;
+    color: #c53b3b;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+
+/* ---------------------------------------------------------
+   통계 카드
+--------------------------------------------------------- */
+
+.stat-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    border: 1px solid #e8ebf0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #172033;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+
+/* ---------------------------------------------------------
+   자료 카드
+--------------------------------------------------------- */
+
+.material-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 15px;
+    border: 1px solid #e8ebf0;
+    transition: 0.2s;
+}
+
+.material-card:hover {
+    box-shadow: 0 7px 20px rgba(0,0,0,0.07);
+}
+
+.material-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #172033;
+}
+
+.material-meta {
+    color: #8a91a0;
+    font-size: 0.85rem;
+}
+
+
+/* ---------------------------------------------------------
+   로그인 화면
+--------------------------------------------------------- */
+
+.login-container {
+    background: white;
+    border-radius: 24px;
+    padding: 42px;
+    border: 1px solid #e8ebf0;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.06);
+}
+
+
+/* ---------------------------------------------------------
+   사이드바
+--------------------------------------------------------- */
+
+section[data-testid="stSidebar"] {
+    background-color: #ffffff;
+    border-right: 1px solid #e8ebf0;
+}
+
+
+/* ---------------------------------------------------------
+   버튼
+--------------------------------------------------------- */
+
+.stButton > button {
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+
+/* ---------------------------------------------------------
+   탭
+--------------------------------------------------------- */
+
+button[data-baseweb="tab"] {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+
+/* ---------------------------------------------------------
+   입력창
+--------------------------------------------------------- */
+
+input,
+textarea {
+    border-radius: 10px !important;
+}
+
+
+/* ---------------------------------------------------------
+   구분선
+--------------------------------------------------------- */
+
+hr {
+    border-color: #e8ebf0;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+# =========================================================
 # 2. 데이터베이스
 # =========================================================
 
@@ -47,7 +273,6 @@ CREATE TABLE IF NOT EXISTS users (
 )
 """)
 
-
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS attendance (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,7 +287,6 @@ CREATE TABLE IF NOT EXISTS attendance (
 )
 """)
 
-
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS materials (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,7 +299,6 @@ CREATE TABLE IF NOT EXISTS materials (
 )
 """)
 
-
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -85,7 +308,6 @@ CREATE TABLE IF NOT EXISTS messages (
 )
 """)
 
-
 conn.commit()
 
 
@@ -94,12 +316,14 @@ conn.commit()
 # =========================================================
 
 def hash_password(password):
+
     return hashlib.sha256(
         password.encode("utf-8")
     ).hexdigest()
 
 
 def check_password(input_password, saved_password):
+
     return hash_password(input_password) == saved_password
 
 
@@ -264,19 +488,34 @@ def logout():
 
 def show_login():
 
-    st.title("🏫 방과후 학습 관리 시스템")
-
-    st.write(
-        "방과후 자습 및 야간자율학습 출결·학습 자료 관리 시스템"
+    st.markdown(
+        '<div class="main-title">🏫 방과후 학습 관리 시스템</div>',
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.markdown(
+        '<div class="main-subtitle">'
+        '방과후 자습 및 야간자율학습을 위한 통합 학습 공간'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 1.4, 1])
 
     with col2:
 
-        st.subheader("🔐 로그인")
+        st.markdown(
+            '<div class="login-container">',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            "### 🔐 로그인"
+        )
+
+        st.caption(
+            "아이디와 비밀번호를 입력하여 접속하세요."
+        )
 
         user_id = st.text_input(
             "아이디",
@@ -290,7 +529,7 @@ def show_login():
         )
 
         if st.button(
-            "로그인",
+            "로그인 →",
             use_container_width=True,
             type="primary"
         ):
@@ -306,23 +545,28 @@ def show_login():
             else:
 
                 st.error(
-                    "아이디 또는 비밀번호가 올바르지 않습니다."
+                    "아이디 또는 비밀번호를 확인해주세요."
                 )
 
-        st.divider()
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        st.write("")
 
         with st.expander("🧪 테스트 계정"):
 
-            st.write("**학생**")
+            st.caption("학생 계정")
+
             st.code(
-                "아이디: student01\n"
-                "비밀번호: student123"
+                "ID: student01\nPW: student123"
             )
 
-            st.write("**선생님**")
+            st.caption("선생님 계정")
+
             st.code(
-                "아이디: teacher\n"
-                "비밀번호: teacher123"
+                "ID: teacher\nPW: teacher123"
             )
 
 
@@ -332,7 +576,17 @@ def show_login():
 
 def student_attendance():
 
-    st.header("📋 나의 출결")
+    st.markdown(
+        '<div class="main-title">📋 나의 출결</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="main-subtitle">'
+        '오늘의 출결 상태를 등록하고 나의 출결 기록을 확인하세요.'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     today = date.today().isoformat()
 
@@ -378,6 +632,7 @@ def student_attendance():
         default_index = 0
 
         if current_status in status_options:
+
             default_index = status_options.index(
                 current_status
             )
@@ -470,21 +725,63 @@ def student_attendance():
         for attendance_date, status, confirmed in records:
 
             if status == "출석":
+
                 icon = "🟢"
+
             elif status == "지각":
+
                 icon = "🟡"
+
             else:
+
                 icon = "🔴"
 
+
             if confirmed:
+
                 confirmation = "✅ 확정"
+
             else:
+
                 confirmation = "⏳ 확인 대기"
 
-            st.write(
-                f"**{attendance_date}**  "
-                f"{icon} {status}  "
-                f"{confirmation}"
+
+            if status == "출석":
+
+                status_class = "status-present"
+
+            elif status == "지각":
+
+                status_class = "status-late"
+
+            else:
+
+                status_class = "status-absent"
+
+
+            st.markdown(
+                f"""
+                <div class="attendance-card">
+
+                    <div class="attendance-title">
+                        {attendance_date}
+                    </div>
+
+                    <div style="margin-top:10px;">
+
+                        <span class="{status_class}">
+                            {icon} {status}
+                        </span>
+
+                        <span style="margin-left:10px; color:#6b7280;">
+                            {confirmation}
+                        </span>
+
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
 
@@ -556,7 +853,10 @@ def study_room():
                 )
 
                 with open(file_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
+
+                    f.write(
+                        uploaded_file.getbuffer()
+                    )
 
                 cursor.execute("""
                 INSERT INTO materials
@@ -625,16 +925,32 @@ def study_room():
                 with st.container(border=True):
 
                     st.markdown(
-                        f"### 📄 {title}"
-                    )
+                        f"""
+                        <div class="material-card">
 
-                    if description:
+                            <div class="material-title">
+                                📄 {title}
+                            </div>
 
-                        st.write(description)
+                            <div style="margin-top:8px;">
+                                {
+                                    description
+                                    if description
+                                    else "설명이 없는 자료입니다."
+                                }
+                            </div>
 
-                    st.caption(
-                        f"작성자: {uploader_id} | "
-                        f"파일: {filename}"
+                            <div class="material-meta"
+                                 style="margin-top:12px;">
+
+                                작성자: {uploader_id}
+                                · 파일: {filename}
+
+                            </div>
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True
                     )
 
                     file_path = os.path.join(
@@ -729,8 +1045,11 @@ def study_room():
             for user_id, message, created_at in messages:
 
                 if user_id == st.session_state.user_id:
+
                     name = st.session_state.user_name
+
                 else:
+
                     cursor.execute("""
                     SELECT name
                     FROM users
@@ -807,18 +1126,21 @@ def teacher_attendance():
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         st.metric(
             "🟢 출석",
             present_count
         )
 
     with col2:
+
         st.metric(
             "🟡 지각",
             late_count
         )
 
     with col3:
+
         st.metric(
             "🔴 결석",
             absent_count
@@ -888,6 +1210,7 @@ def teacher_attendance():
             ]
 
             if current_status not in status_options:
+
                 current_status = "출석"
 
             selected_status = st.selectbox(
@@ -1046,12 +1369,16 @@ def student_page():
 
     st.sidebar.title("👨‍🎓 학생")
 
-    st.sidebar.write(
-        f"**{st.session_state.user_name}**"
+    st.sidebar.markdown("---")
+
+    st.sidebar.caption("현재 로그인")
+
+    st.sidebar.markdown(
+        f"### {st.session_state.user_name}"
     )
 
-    st.sidebar.write(
-        f"{st.session_state.student_number}번"
+    st.sidebar.caption(
+        "출결 및 학습 관리"
     )
 
     if st.sidebar.button(
@@ -1062,19 +1389,33 @@ def student_page():
         logout()
 
 
-    st.title("🏫 학생 학습 관리")
+    st.markdown(
+        '<div class="main-title">안녕하세요, '
+        f'{st.session_state.user_name}님 👋</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="main-subtitle">'
+        '오늘의 출결과 학습 자료를 확인해보세요.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
 
     attendance_tab, study_tab = st.tabs([
-        "📋 출결",
+        "📋 나의 출결",
         "📚 공부 자료방"
     ])
 
 
     with attendance_tab:
+
         student_attendance()
 
 
     with study_tab:
+
         study_room()
 
 
@@ -1086,8 +1427,16 @@ def teacher_page():
 
     st.sidebar.title("👨‍🏫 선생님")
 
-    st.sidebar.write(
-        f"**{st.session_state.user_name}**"
+    st.sidebar.markdown("---")
+
+    st.sidebar.caption("현재 로그인")
+
+    st.sidebar.markdown(
+        f"### {st.session_state.user_name}"
+    )
+
+    st.sidebar.caption(
+        "학생 출결 및 학습 관리"
     )
 
     if st.sidebar.button(
@@ -1098,7 +1447,18 @@ def teacher_page():
         logout()
 
 
-    st.title("🏫 선생님 관리 시스템")
+    st.markdown(
+        '<div class="main-title">📊 학습 관리 대시보드</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="main-subtitle">'
+        '학생들의 출결과 학습 자료를 관리합니다.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
 
     attendance_tab, study_tab = st.tabs([
         "📊 전체 출결 관리",
@@ -1107,10 +1467,12 @@ def teacher_page():
 
 
     with attendance_tab:
+
         teacher_attendance()
 
 
     with study_tab:
+
         study_room()
 
 
